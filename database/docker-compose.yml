@@ -1,0 +1,10 @@
+services:
+  postgres_db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: projetweb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: projetweb
+    ports :
+      - 5432:5432
