@@ -1,14 +1,84 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+model Student {
+  INE         Int               @id
+  name        String
+  lastName    String
+  dateOfBirth DateTime
+  emailAddress String           @unique
+  td          String?
+  balance     Float
+  Prom        String
+  idProm      Int
+  level       String
+  year        Int
+  posts       Post[]
+  comments    Comment[]
+  questions   Question[]
+  operations  StudentOperation[]
+}
+
+model StudentOperation {
+  idOp            Int       @id @default(autoincrement())
+  studentSender   Int
+  studentReceiver Int
+  dateOfOperation DateTime
+  gi              Float
+  type            String
+  Student         Student   @relation(fields: [studentSender], references: [INE])
+}
+
+model Channel {
+  idChannel Int    @id @default(autoincrement())
+  name      String
+  posts     Post[]
+}
+
+model Post {
+  idPost      Int       @id @default(autoincrement())
+  INE         Int
+  title       String
+  content     String
+  date        DateTime
+  files       String?
+  upvote      Int
+  downvote    Int
+  student     Student   @relation(fields: [INE], references: [INE])
+  channelId   Int
+  channel     Channel   @relation(fields: [channelId], references: [idChannel])
+  comments    Comment[]
+}
+
+model Comment {
+  idComment   Int       @id @default(autoincrement())
+  INE         Int
+  title       String
+  content     String
+  date        DateTime
+  files       String?
+  upvote      Int
+  downvote    Int
+  student     Student   @relation(fields: [INE], references: [INE])
+  postId      Int
+  post        Post      @relation(fields: [postId], references: [idPost])
+}
+
+model Question {
+  idQuestion  Int       @id @default(autoincrement())
+  INE         Int
+  title       String
+  content     String
+  date        DateTime
+  files       String?
+  upvote      Int
+  downvote    Int
+  reward      Float
+  student     Student   @relation(fields: [INE], references: [INE])
 }
